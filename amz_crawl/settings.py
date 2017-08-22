@@ -52,26 +52,25 @@ DEFAULT_REQUEST_HEADERS = {
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
 
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'amz_crwal.middlewares.RandomUserAgentMiddleware': 543,  # 自定义
-    # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
-    #  scrapy_fake_useragent 框架
-
 }
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
 
-    # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
-    # 'amz_crwal.middlewares.ProxyMiddleware': 100,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'amz_crwal.middlewares.RandomUserAgentMiddleware': 543,  # 自定义
+    #  'amz_crwal.middlewares.ProxyMiddleware': 100,
+    # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+    #  scrapy_fake_useragent 框架
 }
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
+MYEXT_ENABLED = True
 EXTENSIONS = {
     'scrapy.extensions.telnet.TelnetConsole': None,
-
+    'amz_crwal.extensions.SpiderOpenCloseLogging': 200
 }
 
 # Configure item pipelines
