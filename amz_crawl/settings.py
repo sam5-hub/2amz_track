@@ -16,7 +16,6 @@ BOT_NAME = 'amz_crawl'
 SPIDER_MODULES = ['amz_crawl.spiders']
 NEWSPIDER_MODULE = 'amz_crawl.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.54 Safari/536.5'
 
@@ -52,22 +51,28 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    'amz_crwal.middlewares.AmazonOrdersSpiderMiddleware': 543,
+
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'amz_crwal.middlewares.RandomUserAgentMiddleware': 543,  # 自定义
+    # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+    #  scrapy_fake_useragent 框架
+
 }
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#
-#     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
-#     'amazon_orders.middlewares.ProxyMiddleware': 100,
-# }
+DOWNLOADER_MIDDLEWARES = {
+
+    # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+    # 'amz_crwal.middlewares.ProxyMiddleware': 100,
+}
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-# }
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': None,
+
+}
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
