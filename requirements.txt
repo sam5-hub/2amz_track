@@ -1,0 +1,4 @@
+fake-useragent==0.1.7
+openpyxl
+pymysql
+requests

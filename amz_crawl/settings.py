@@ -10,6 +10,10 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 import os
 import socket
+import sys
+
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 BOT_NAME = 'amz_crawl'
 
@@ -56,34 +60,60 @@ SPIDER_MIDDLEWARES = {
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
+
+# 代理
+# Retry many times since proxies often fail
+RETRY_TIMES = 10
+# Retry on most error codes since proxies fail for different reasons
+RETRY_HTTP_CODES = [500, 503, 504, 400, 403, 404, 408]
+
+# Proxy list containing entries like
+# http://host1:port
+# http://username:password@host2:port
+# http://host3:port
+# ...
+PROXY_LIST = '/path/to/proxy/list.txt'
+
+# Proxy mode
+# 0 = Every requests have different proxy
+# 1 = Take only one proxy from the list and assign it to every requests
+# 2 = Put a custom proxy to use in the settings
+PROXY_MODE = 0
+
+# If proxy mode is 2 uncomment this sentence :
+# CUSTOM_PROXY = "http://host1:port"
+
 DOWNLOADER_MIDDLEWARES = {
 
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'amz_crwal.middlewares.RandomUserAgentMiddleware': 543,  # 自定义
-    #  'amz_crwal.middlewares.ProxyMiddleware': 100,
+    'amz_crawl.middlewares.RandomUserAgentMiddleware': 543,  # 自定义
+    # 'amz_crawl.middlewares.RandomProxyMiddleware': 542
+    # 'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
+    # 'scrapy_proxies.RandomProxy': 100,
+    # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
     # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
     #  scrapy_fake_useragent 框架
 }
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-MYEXT_ENABLED = True
-EXTENSIONS = {
-    'scrapy.extensions.telnet.TelnetConsole': None,
-    'amz_crwal.extensions.SpiderOpenCloseLogging': 200
-}
+# MYEXT_ENABLED = True
+# EXTENSIONS = {
+#     'scrapy.extensions.telnet.TelnetConsole': None,
+#     'amz_crawl.extensions.SpiderOpenCloseLogging': 200,
+# }
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'amz_crawl.pipelines.AmazonOrdersPipeline': 1,
+    'amz_crawl.pipelines.AmzCrawlPipeline': 1,
     'amz_crawl.pipelines.AmazonOrdersImagePipeline': 2,
     'amz_crawl.pipelines.AmzCrawlXLSXPipeline': 3,
 
 }
 
 # field名字，是数组
-IMAGES_URLS_FIELD = "front_image_url"
+# IMAGES_URLS_FIELD = "front_image_url"
 project_dir = os.path.abspath(os.path.curdir)
 
 # 放到指定位置 /home/images/....
@@ -119,13 +149,13 @@ AUTOTHROTTLE_DEBUG = False
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DB_SERVER = 'MySQLdb'
-DB_CONNECT = {
-    'host': 'localhost',
-    'user': 'root',
-    'passwd': '&ilk_CfUc9x/',
-    'port': 3306,
-    'db': 'ams',
-    'charset': 'utf8',
-    'use_unicode': True
-}
+
+
+# linux pip install MySQL-python
+DATABASE = {'drivername': 'mysql',
+            'host': 'localhost',
+            'port': '3306',
+            'username': 'root',
+            'password': '&ilk_CfUc9x/',
+            'database': 'spider',
+            'query': {'charset': 'utf8'}}

@@ -10,6 +10,7 @@ from scrapy import signals
 from fake_useragent import UserAgent
 from tool.file_deal import make_resource_zip, remove_full_path
 from tool.mailtool import send_amz_mail
+from scrapy.spidermiddlewares.depth import DepthMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +64,6 @@ class AmzCrawlSpiderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
     def spider_closed(self, spider):
-        remove_full_path()
-        make_resource_zip()
-        send_amz_mail()
-
         spider.logger.info('Spider closed: %s' % spider.name)
 
 
@@ -86,6 +83,7 @@ class RandomUserAgentMiddleware(object):
     def process_request(self, request, spider):
         def get_ua():
             '''Gets random UA based on the type setting (random, firefox…)'''
+            # getattr 去ua里面的ie、Firefox等属性
             return getattr(self.ua, self.ua_type)
 
         if self.per_proxy:
@@ -97,4 +95,19 @@ class RandomUserAgentMiddleware(object):
             request.headers.setdefault('User-Agent', self.proxy2ua[proxy])
         else:
             ua = get_ua()
-            request.headers.setdefault('User-Agent', get_ua())
+            request.headers.setdefault('User-Agent', ua)
+            # request.headers.meta['proxy'] =
+
+    # def process_response(self, response, spider):
+    #     pass
+
+
+# from tool.ip_crawl import GetIP
+#
+#
+# class RandomProxyMiddleware(object):
+#     # 动态设置IP
+#
+#     def process_request(self, request, spider):
+#         get_ip = GetIP()
+#         request.meta['proxy'] = get_ip.get_random_ip()

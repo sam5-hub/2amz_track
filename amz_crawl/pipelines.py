@@ -94,3 +94,26 @@ class AmazonOrdersImagePipeline(ImagesPipeline):
         old_path = os.path.join(resource_path, image_file_path)
 
         return new_path, old_path
+
+# from sqlalchemy.orm import sessionmaker
+# from amz_crawl.items import db_connect
+#
+# class AmzDataBasePipeline(object):
+#     """保存文章到数据库"""
+#     def __init__(self):
+#         engine = db_connect()
+#         create_news_table(engine)
+#         self.Session = sessionmaker(bind=engine)
+#     def open_spider(self, spider):
+#         """This method is called when the spider is opened."""
+#         pass
+#     def process_item(self, item, spider):
+#         a = Article(url=item["url"],
+#                     title=item["title"].encode("utf-8"),
+#                     publish_time=item["publish_time"].encode("utf-8"),
+#                     body=item["body"].encode("utf-8"),
+#                     source_site=item["source_site"].encode("utf-8"))
+#         with session_scope(self.Session) as session:
+#             session.add(a)
+#     def close_spider(self, spider):
+#         pass
