@@ -2,10 +2,12 @@ from zipfile import ZipFile
 from scrapy.utils.project import get_project_settings
 from datetime import datetime
 import os
+import re
 
 settings = get_project_settings()
 today = datetime.now().strftime('%y-%m-%d')
 resource_path = settings.attributes.get('IMAGES_STORE').value
+ch_special = re.compile(r'[<>|\\/:*?"]')
 
 
 def make_resource_zip(zip_path=resource_path):
@@ -28,11 +30,21 @@ def remove_full_path():
     full_path = os.path.join(resource_path, 'full')
     os.removedirs(full_path)
 
+    
 
+def cn_special_func(match):
+    if match.group(0) in "<>|\/?":
+        return '-'
+    else:
+        return ''
+
+# def regularize_filename(filename):
+#     '''清理文件名'''
+#     # <>|\/:*?"
+#     new_name = filename.replace('>', '-').replace('<', '-').replace('|', '-').replace('\\', '-').replace('/',
+#                                                                                                          '-').replace(
+#         ':', '').replace('*', '').replace('?', '-').replace(r'"', r'')
+#     return new_name
 def regularize_filename(filename):
-    '''清理文件名'''
-    # <>|\/:*?"
-    new_name = filename.replace('>', '-').replace('<', '-').replace('|', '-').replace('\\', '-').replace('/',
-                                                                                                         '-').replace(
-        ':', '').replace('*', '').replace('?', '-').replace(r'"', r'')
-    return new_name
+    new_filename = res.sub(cn_special_func,filename)
+    return new_filename
