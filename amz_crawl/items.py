@@ -37,6 +37,14 @@ class AmazonOrdersItemLoader(ItemLoader):
 
 # Item
 
+class AmazonDepartmentItem(Item):
+    title = Field()
+    url = Field()
+    belong = Field()  # BSR & HNR
+    category = Field()  # 分类
+    sub_category = Field()  # 子分类
+
+
 class AmazonOrdersItem(Item):
     front_image_url = Field()
     front_image_path = Field()

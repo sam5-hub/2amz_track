@@ -7,6 +7,7 @@
 
 from scrapy.utils.project import get_project_settings
 from scrapy.pipelines.images import ImagesPipeline
+from items import AmazonDepartmentItem
 import os
 import platform
 from datetime import datetime
@@ -16,6 +17,46 @@ settings = get_project_settings()
 all_resource_path = settings.attributes.get('RESOURCE_STORE').value
 resource_path = settings.attributes.get('IMAGES_STORE').value
 today_path = os.path.join(all_resource_path, datetime.now().strftime('%y-%m-%d'))
+
+import csv
+
+from scrapy import signals
+from scrapy.contrib.exporter import CsvItemExporter
+
+
+class CSVPipeline(object):
+    def __init__(self):
+        self.files = {}
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        pipeline = cls()
+        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        return pipeline
+
+    def spider_opened(self, spider):
+        pass
+
+    def spider_closed(self, spider):
+        if self.exporter:
+            self.exporter.finish_exporting()
+            file = self.files.pop(spider)
+            file.close()
+
+    def process_item(self, item, spider):
+        file_path = os.path.join(resource_path, 'category.csv')
+        if not os.path.exists(file_path):
+            file = open(file_path, 'w+b')
+            self.files[spider] = file
+            self.exporter = CsvItemExporter(file)
+            self.exporter.fields_to_export = ['belong', 'title', 'url', 'category', 'sub_category']
+            self.exporter.start_exporting()
+            self.exporter.export_item(item)
+        else:
+            self.exporter.export_item(item)
+
+        return item
 
 
 class AmzCrawlXLSXPipeline(object):
@@ -95,25 +136,25 @@ class AmazonOrdersImagePipeline(ImagesPipeline):
 
         return new_path, old_path
 
-# from sqlalchemy.orm import sessionmaker
-# from amz_crawl.items import db_connect
-#
-# class AmzDataBasePipeline(object):
-#     """保存文章到数据库"""
-#     def __init__(self):
-#         engine = db_connect()
-#         create_news_table(engine)
-#         self.Session = sessionmaker(bind=engine)
-#     def open_spider(self, spider):
-#         """This method is called when the spider is opened."""
-#         pass
-#     def process_item(self, item, spider):
-#         a = Article(url=item["url"],
-#                     title=item["title"].encode("utf-8"),
-#                     publish_time=item["publish_time"].encode("utf-8"),
-#                     body=item["body"].encode("utf-8"),
-#                     source_site=item["source_site"].encode("utf-8"))
-#         with session_scope(self.Session) as session:
-#             session.add(a)
-#     def close_spider(self, spider):
-#         pass
+        # from sqlalchemy.orm import sessionmaker
+        # from amz_crawl.items import db_connect
+        #
+        # class AmzDataBasePipeline(object):
+        #     """保存文章到数据库"""
+        #     def __init__(self):
+        #         engine = db_connect()
+        #         create_news_table(engine)
+        #         self.Session = sessionmaker(bind=engine)
+        #     def open_spider(self, spider):
+        #         """This method is called when the spider is opened."""
+        #         pass
+        #     def process_item(self, item, spider):
+        #         a = Article(url=item["url"],
+        #                     title=item["title"].encode("utf-8"),
+        #                     publish_time=item["publish_time"].encode("utf-8"),
+        #                     body=item["body"].encode("utf-8"),
+        #                     source_site=item["source_site"].encode("utf-8"))
+        #         with session_scope(self.Session) as session:
+        #             session.add(a)
+        #     def close_spider(self, spider):
+        #         pass

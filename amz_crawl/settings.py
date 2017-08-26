@@ -12,7 +12,6 @@ import os
 import socket
 import sys
 
-
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 BOT_NAME = 'amz_crawl'
@@ -106,9 +105,9 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'amz_crawl.pipelines.AmzCrawlPipeline': 1,
-    'amz_crawl.pipelines.AmazonOrdersImagePipeline': 2,
-    'amz_crawl.pipelines.AmzCrawlXLSXPipeline': 3,
+    'amz_crawl.pipelines.CSVPipeline': 1,
+    # 'amz_crawl.pipelines.AmazonOrdersImagePipeline': 2,
+    # 'amz_crawl.pipelines.AmzCrawlXLSXPipeline': 3,
 
 }
 
@@ -126,7 +125,7 @@ else:
 if socket.gethostname() == 'iZwz9gxohhsdr3oj02junuZ':
     RESOURCE_STORE = '/home/AMZ-ALL-BSR-HNR'
 else:
-    RESOURCE_STORE = os.path.join(project_dir, 'AMZ-ALL-BSR-HNR')
+    RESOURCE_STORE = os.path.join(project_dir, 'resource')
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

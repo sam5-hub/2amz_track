@@ -1,0 +1,30 @@
+[
+    {
+      "title": "abc",
+      "category": "clothing",
+      "sub_category": "clothing/woman/underwear",
+      "rank": "1",
+      "belong":"NEW"
+    },
+    {
+      "title": "sexywear",
+      "category": "clothing",
+      "sub_category": "clothing/woman/sexy",
+      "rank": "2",
+      "belong":"NEW"
+    },
+    {
+      "title": "basketball",
+      "category": "sport",
+      "sub_category": "sport/woman/play",
+      "rank": "4",
+      "belong":"BEST"
+    },
+    {
+      "title": "football",
+      "category": "sport",
+      "sub_category": "sport/man/play",
+      "rank": "7",
+      "belong":"BEST"
+    }
+]
